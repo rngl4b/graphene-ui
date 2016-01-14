@@ -25,8 +25,8 @@
         lock: "Lock",
         unlock: "Unlock",
         help: "Help",
-        locked_tip: "Wallet is locked. Click to unlock.",
-        unlocked_tip: "Wallet is unlocked. Click to lock."
+        locked_tip: "Wallet is locked.<br/>Click to unlock.",
+        unlocked_tip: "Wallet is unlocked.<br/>Click to lock."
     },
     operation: {
         pending: "pending %(blocks)s blocks",
@@ -41,8 +41,29 @@
         hour_24: "24hr Change",
         recent: "Recent activity",
         name: "Account name",
+        id: "Account ID",
         more: "see more",
         deposit_withdraw: "Deposit/Withdraw",
+        as_collateral: "Collateral",
+        open_orders: "Open orders",
+        total_value: "Total value",
+        whitelist: {
+            title: "Whitelist",
+            black: "Blacklist",
+            add: "Add to whitelist",
+            add_black: "Add to blacklist",
+            empty: "%(account)s has not whitelisted any accounts.",
+            empty_black: "%(account)s has not blacklisted any accounts.",
+            white_by: "Whitelisted by",
+            black_by: "Blacklisted by",
+            empty_white_by: "No accounts have whitelisted %(account)s.",
+            empty_black_by: "No accounts have blacklisted %(account)s."
+        },
+        vesting: {
+            title: "Vesting balances",
+            balance_number: "Balance #%(id)s",
+            no_balances: "This account has no vesting balances"
+        },
         member: {
             stats: "Membership",
             join: "Joined on",
@@ -57,7 +78,7 @@
             fees_vested: "Pending vested fees",
             referrals: "Referrals",
             rewards: "Cashback Rewards",
-            cashback: "Vesting cashback balance",
+            cashback: "Vesting balance amount",
             vested: "Vested",
             unknown: "Unknown member",
             lifetime: "Lifetime member",
@@ -67,7 +88,13 @@
             subscribe: "Buy Annual Subscription",
             expires: "expires",
             membership_expiration: "Membership Expiration",
-            fees_cashback: "Fees and cashback"
+            fees_cashback: "Fees and cashback",
+            coindays: "coin days",
+            earned: "Coin days earned",
+            required: "Coin days required",
+            remaining: "Days left of vesting period",
+            claim: "Claim now",
+            available: "Available to claim"
         },
         user_issued_assets: {
             symbol: "Symbol",
@@ -166,7 +193,9 @@
                 supported: "Supported",
                 rejected: "Rejected",
                 neutral: "Neutral"
-            }
+            },
+            start: "Start date",
+            end: "End date"
         },
         options: {
             num_witnesses: "Desired Witnesses",
@@ -207,7 +236,8 @@
         },
         propose_from: "Propose From",
         settle: "Settle",
-        "no_orders": "No open orders"
+        "no_orders": "No open orders",
+        asset_details: "Asset details"
     },
     pagination: {
         newer: "Newer",
@@ -237,7 +267,8 @@
         broadcast: "Your transfer has been broadcast to the network",
         again: "MAKE ANOTHER TRANSFER",
         see: "SEE MY TRANSFERS",
-        close: "Close"
+        close: "Close",
+        memo_unlock: "Unlock your wallet in order to see this memo"
     },
     transaction: {
         confirm: "Please confirm the transaction",
@@ -275,7 +306,9 @@
         update_account: "updated their account data",
         set_proxy: "set %(proxy)s as their voting proxy",
         whitelist_account: "Whitelisted the account",
-        whitelisted_by: "Was whitelisted by the account",
+        unlisted_by: "%(lister)s unlisted the account %(listee)s",
+        whitelisted_by: "%(lister)s whitelisted the account %(listee)s",
+        blacklisted_by: "%(lister)s blacklisted the account %(listee)s",
         transfer_account: "Transferred the account",
         update_asset: "Updated the asset",
         update_feed_producers: "pdated the feed producers of asset",
@@ -398,6 +431,12 @@
             symbol3 : "Symbols with 3 Characters",
             symbol4 : "Sybmols with 4 Characters",
             long_symbol : "Longer Symbols"
+        },
+        whitelist_states: {
+            no_listing: "Unlisted",
+            white_listed: "Whitelisted",
+            black_listed: "Blacklisted",
+            white_and_black_listed: "Whitelisted and blacklisted"
         }
     },
     explorer: {
@@ -485,7 +524,7 @@
                 pool_balance: "Pool balance",
                 unclaimed_issuer_income: "Unclaimed issuer income",
                 claim_fees: "Claim fees",
-                fund_text: "The fee pool is used to pay fees in %(core)s by converting the fee in %(asset)s to %(core)s.",
+                fund_text: "The fee pool is used to pay fees in %(core)s by converting the fee in %(asset)s to %(core)s. If the fee pool runs out of funds, fees may no longer be paid in %(asset)s and will default to %(core)s",
                 claim_text: "The asset issuer may claim any accumulated fees here."
             },
             permissions: {
@@ -536,6 +575,13 @@
         },
         account: {
             title: "Account"
+        },
+        fees: {
+            type: "Fee Type",
+            fee: "Standard Fee",
+            feeeq: "(equivalent)",
+            feeltm: "Lifetime/Anual Member Fee",
+            feeltmeq: "(equivalent)",
         }
     },
     settings: {
@@ -553,7 +599,8 @@
         faucet_address: "Faucet Address",
         showSettles: "Show settle orders in depth chart",
         yes: "Yes",
-        no: "No"
+        no: "No",
+        walletLockTimeout: "Wallet auto-lock time (seconds)"
     },
     footer: {
         title: "Graphene",
@@ -613,7 +660,10 @@
         bids: "Bids",
         no_data: "No data",
         time: "Time interval",
-        borrow: "Borrow"
+        borrow: "Borrow",
+        no_balance: "Insufficient balance",
+        invalid_amount: "Invalid amount",
+        invalid_price: "Invalid price"
     },
     fees: {
      title: "Fee Schedule"
@@ -760,7 +810,7 @@
         scan_qr: "Scan QR",
         transwiser: {
             gateway: "Transwiser",
-            visit_weidian: "Visit WEIDIAN to deposit",
+            visit_weidian: "Visit to deposit",
             deposit_title: "Deposit RMB to %(asset)s",
             withdraw_title: "Withdraw %(asset)s to RMB",
             alipay: "ALIPAY Account Name",

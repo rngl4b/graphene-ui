@@ -11,6 +11,9 @@ import AccountActions from "actions/AccountActions";
 import Icon from "../Icon/Icon";
 import TimeAgo from "../Utility/TimeAgo";
 import HelpContent from "../Utility/HelpContent";
+import utils from "common/utils";
+import WalletActions from "actions/WalletActions";
+import {VestingBalance} from "./AccountVesting";
 
 @BindToChainState({keep_updating:true})
 class AccountMembership extends React.Component {
@@ -30,6 +33,12 @@ class AccountMembership extends React.Component {
         AccountActions.upgradeAccount(id, lifetime);
     }
 
+    _onClaim(e) {
+        e.preventDefault();
+        let cvb = ChainStore.getObject( this.props.account.get("cashback_vb") );
+        
+        WalletActions.claimVestingBalance(this.props.account.get("id"), cvb);
+    }
 
     render() {
         let gprops = this.props.gprops;
@@ -43,9 +52,7 @@ class AccountMembership extends React.Component {
         if( ref ) account.referrer_name = ref.get('name');
         let reg = ChainStore.getAccount( account.registrar );
         if( reg ) account.registrar_name = reg.get('name');
-
-        let cvb = account.cashback_vb ? ChainStore.getObject( account.cashback_vb ) : null;
-
+       
         let account_name = account.name;
 
         let network_fee  = account.network_fee_percentage/100;
@@ -108,19 +115,19 @@ class AccountMembership extends React.Component {
                                     </tr>
                                     <tr>
                                         <td><Translate content="account.member.lifetime_referrer"/>  &nbsp;
-                                        (<Link to="account" params={{account_name: account.lifetime_referrer}}>{account.lifetime_referrer_name}</Link>)
+                                        (<Link to={`account/${account.lifetime_referrer_name}/overview`}>{account.lifetime_referrer_name}</Link>)
                                         </td>
                                         <td>{lifetime_fee}%</td>
                                     </tr>
                                     <tr>
                                         <td><Translate content="account.member.registrar"/>  &nbsp;
-                                        (<Link to="account" params={{account_name: account.registrar_name}}>{account.registrar_name}</Link>)
+                                        (<Link to={`account/${account.registrar_name}/overview`}>{account.registrar_name}</Link>)
                                         </td>
                                         <td>{registrar_fee}%</td>
                                     </tr>
                                     <tr>
                                         <td><Translate content="account.member.referrer"/>  &nbsp;
-                                        (<Link to="account" params={{account_name: account.referrer}}>{account.referrer_name }</Link>)
+                                        (<Link to={`account/${account.referrer_name}/overview`}>{account.referrer_name }</Link>)
                                         </td>
                                         <td>{referrer_fee}%</td>
                                     </tr>
@@ -134,14 +141,9 @@ class AccountMembership extends React.Component {
                             <h4 style={{paddingTop: "1rem"}}><Translate content="account.member.fees_cashback"/></h4>
                             <table className="table key-value-table">
                                 <Statistics stat_object={account.statistics}/>
-                                {cvb ? (
-                                    <tbody>
-                                        <tr>
-                                            <td><Translate content="account.member.cashback"/> </td>
-                                            <td><FormattedAsset amount={cvb.getIn(["balance", "amount"])} asset={cvb.getIn(["balance", "asset_id"])} /></td>
-                                        </tr>
-                                    </tbody>) : null}
                             </table>
+                            <br/>
+                            <VestingBalance vb={account.cashback_vb} account={account}/>                            
                         </div>
                     </div>
                     <div className="grid-block large-1">&nbsp;</div>

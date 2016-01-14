@@ -16,7 +16,6 @@ import SettingsActions from "actions/SettingsActions";
 import AssetActions from "actions/AssetActions";
 import MarketsActions from "actions/MarketsActions";
 import cnames from "classnames";
-import Icon from "../Icon/Icon";
 import {debounce} from "lodash";
 
 let lastLookup = new Date();
@@ -40,14 +39,14 @@ class MyMarkets extends React.Component {
     constructor(props) {
         super();
 
-        let inputValue = props.viewSettings.get("marketLookupInput");
+        let inputValue = props.viewSettings.get("marketLookupInput") || null;
         let symbols = inputValue ? inputValue.split(":") : [null];
         let quote = symbols[0];
         let base = symbols.length === 2 ? symbols[1] : null;
 
         this.state = {
-            inverseSort: props.viewSettings.get("myMarketsInvert"),
-            sortBy: props.viewSettings.get("myMarketsSort"),
+            inverseSort: props.viewSettings.get("myMarketsInvert") || true,
+            sortBy: props.viewSettings.get("myMarketsSort") || "volume",
             activeTab: props.viewSettings.get("favMarketTab") || "starred",
             lookupQuote: quote,
             lookupBase: base,
@@ -77,11 +76,20 @@ class MyMarkets extends React.Component {
         let historyContainer = ReactDOM.findDOMNode(this.refs.favorites);
         Ps.initialize(historyContainer);
 
-        if (this.state.activeTab === "all") {
+        this._setMinWidth();
+
+        if (this.state.activeTab === "all" && this.state.inputValue) {
             this._lookupAssets({target: {value: this.state.inputValue}}, true);
         }
     }
 
+    _setMinWidth() {
+        if (this.refs.favorites && this.props.activeTab === "starred") {
+            this.setState({
+                minWidth: this.refs.favorites.offsetWidth
+            });
+        }
+    }
     componentDidUpdate() {
         let historyContainer = ReactDOM.findDOMNode(this.refs.favorites);
         Ps.update(historyContainer);
@@ -120,9 +128,14 @@ class MyMarkets extends React.Component {
         this.setState({
             activeTab: tab
         });
+
+        this._setMinWidth();
     }
 
     _lookupAssets(e, force = false) {
+        if (!e.target.value && e.target.value !== "") {
+            return;
+        }
         let now = new Date();
 
         let symbols = e.target.value.toUpperCase().split(":");
@@ -349,7 +362,7 @@ class MyMarkets extends React.Component {
         return (
             <div className={this.props.className} style={this.props.style}>
                 <div style={this.props.headerStyle} className="grid-block shrink left-orderbook-header bottom-header">
-                    <div className={starClass} onClick={this._changeTab.bind(this, "starred")}>
+                    <div ref="myMarkets" className={starClass} onClick={this._changeTab.bind(this, "starred")}>
                         <Translate content="exchange.market_name" />
                     </div>
                     <div className={allClass} onClick={this._changeTab.bind(this, "all")} >
@@ -362,7 +375,7 @@ class MyMarkets extends React.Component {
                         {this.props.controls ? <div style={{paddingBottom: "0.5rem"}}>{this.props.controls}</div> : null}
                         {activeTab === "all" ? <input type="text" value={this.state.inputValue} onChange={this._lookupAssets.bind(this)} placeholder="SYMBOL:SYMBOL" /> : null}
                     </div> ) : null}
-                <div className="table-container grid-content mymarkets-list" ref="favorites">
+                <div style={{minWidth: this.state.minWidth}} className="table-container grid-content mymarkets-list" ref="favorites">
                     <table className="table table-hover text-right market-right-padding">
                         <thead>
                             <tr>{headers}</tr>

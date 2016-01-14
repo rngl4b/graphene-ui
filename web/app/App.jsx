@@ -18,8 +18,10 @@ import AccountAssets from "./components/Account/AccountAssets";
 import AccountAssetCreate from "./components/Account/AccountAssetCreate";
 import AccountAssetUpdate from "./components/Account/AccountAssetUpdate";
 import AccountMembership from "./components/Account/AccountMembership";
+import AccountVesting from "./components/Account/AccountVesting";
 import AccountDepositWithdraw from "./components/Account/AccountDepositWithdraw";
 import AccountPermissions from "./components/Account/AccountPermissions";
+import AccountWhitelist from "./components/Account/AccountWhitelist";
 import AccountVoting from "./components/Account/AccountVoting";
 import AccountOrders from "./components/Account/AccountOrders";
 import Exchange from "./components/Exchange/ExchangeContainer";
@@ -49,7 +51,7 @@ import Console from "./components/Console/Console";
 import ReactTooltip from "react-tooltip";
 import Invoice from "./components/Transfer/Invoice";
 import ChainStore from "api/ChainStore";
-import Backup, {BackupCreate, BackupVerify, BackupRestore} from "./components/Wallet/Backup";
+import {BackupCreate, BackupVerify, BackupRestore} from "./components/Wallet/Backup";
 import WalletChangePassword from "./components/Wallet/WalletChangePassword"
 import WalletManagerStore from "stores/WalletManagerStore";
 import WalletManager, {WalletOptions, ChangeActiveWallet, WalletDelete} from "./components/Wallet/WalletManager";
@@ -60,7 +62,7 @@ import AccountRefsStore from "stores/AccountRefsStore";
 import Help from "./components/Help";
 import InitError from "./components/InitError";
 import BrowserSupportModal from "./components/Modal/BrowserSupportModal";
-import createBrowserHistory from 'history/lib/createBrowserHistory';
+import createBrowserHistory from 'history/lib/createHashHistory';
 import {IntlProvider} from "react-intl";
 import intlData from "./components/Utility/intlData";
 import connectToStores from "alt/utils/connectToStores";
@@ -69,7 +71,7 @@ require("./components/Utility/Prototypes"); // Adds a .equals method to Array fo
 require("./assets/stylesheets/app.scss");
 require("dl_cli_index").init(window) // Adds some object refs to the global window object
 
-let history = createBrowserHistory()
+let history = createBrowserHistory({queryKey: false})
 
 class App extends React.Component {
 
@@ -105,7 +107,8 @@ class App extends React.Component {
         } catch(e) {
             console.error(e);
         }
-        if (!window.chrome && !window.electron) {
+        const user_agent = navigator.userAgent.toLowerCase();
+        if (!(window.electron || user_agent.indexOf("firefox") > -1 || user_agent.indexOf("chrome") > -1 || user_agent.indexOf("edge") > -1)) {
             this.refs.browser_modal.show();
         }
     }
@@ -141,13 +144,12 @@ class App extends React.Component {
         } else {
             content = (
                 <div className="grid-frame vertical">
-                    {<Header/>}
-                    {/*<MobileMenu isUnlocked={this.state.isUnlocked} id="mobile-menu"/>
-                    */}
+                    <Header/>
+                    <MobileMenu isUnlocked={this.state.isUnlocked} id="mobile-menu"/>
                     <div className="grid-block vertical">
                         {this.props.children}
                     </div>
-                    {/*<Footer synced={this.state.synced}/>*/}
+                    <Footer synced={this.state.synced}/>
                     <ReactTooltip place="top" type="dark" effect="solid"/>
                 </div>
             );
@@ -176,6 +178,10 @@ class RootIntl extends React.Component {
             locale: IntlStore.getState().currentLocale
         }
     };
+
+    componentDidMount() {
+        IntlActions.switchLocale(this.props.locale);
+    }
 
     render() {
         return <IntlProvider locale={this.props.locale} formats={intlData.formats}><App {...this.props}/></IntlProvider>;
@@ -280,12 +286,13 @@ let routes = (
             <Route name="account-assets" path="assets" component={AccountAssets}/>
             <Route name="account-create-asset" path="create-asset" component={AccountAssetCreate}/>
             <Route name="account-update-asset" path="update-asset/:asset" component={AccountAssetUpdate}/>
-
             <Route name="account-member-stats" path="member-stats" component={AccountMembership}/>
+            <Route path="vesting" component={AccountVesting}/>
             <Route name="account-permissions" path="permissions" component={AccountPermissions}/>
             <Route name="account-voting" path="voting" component={AccountVoting}/>
             <Route name="account-deposit-withdraw" path="deposit-withdraw" component={AccountDepositWithdraw}/>
             <Route name="account-orders" path="orders" component={AccountOrders}/>
+            <Route path="whitelist" component={AccountWhitelist}/>
         </Route>
         <Route name="init-error" path="/init-error" component={InitError}/>
         <Route name="help" path="/help" component={Help}>

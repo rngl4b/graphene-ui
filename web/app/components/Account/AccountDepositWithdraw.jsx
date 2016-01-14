@@ -17,7 +17,7 @@ import TranswiserDepositWithdraw from "./transwiser/TranswiserDepositWithdraw";
 import BlockTradesBridgeDepositRequest from "./blocktrades/BlockTradesBridgeDepositRequest";
 import BlockTradesGatewayDepositRequest from "./blocktrades/BlockTradesGatewayDepositRequest";
 import WithdrawModalBlocktrades from "../Modal/WithdrawModalBlocktrades";
-import Tabs, {Tab} from "../Utility/Tabs";
+import Tabs from "../Utility/Tabs";
 var Post = require("../Utility/FormPost.js");
 
 @BindToChainState({keep_updating:true})
@@ -35,16 +35,16 @@ class MetaexchangeDepositRequest extends React.Component {
 	
 	constructor(props) 
 	{
-		let parts = props.symbol_pair.split('_');
-		props.base_symbol = parts[0];
-		props.quote_symbol = parts[1];
-	
         super(props);
-        this.state = { deposit_address: null, 
-						memo:null, 
-						base_symbol:parts[0],
-						quote_symbol:parts[1]
-					};
+
+		let parts = props.symbol_pair.split('_');
+
+        this.state = {
+            deposit_address: null, 
+   			memo:null, 
+			base_symbol:parts[0],
+			quote_symbol:parts[1]
+		};
 		this.apiRoot = "https://metaexchange.info/api";
 		this.marketPath = "https://metaexchange.info/markets/";
 		//this.apiRoot = "http://localhost:1235/api";
@@ -214,9 +214,9 @@ class AccountDepositWithdraw extends React.Component {
     render() {
         return (
 		<div className="grid-content">
-			<Tabs settings="depositWithdrawSettingsTab" defaultActiveTab={config.depositWithdrawDefaultActiveTab}>
+			<Tabs setting="depositWithdrawSettingsTab" defaultActiveTab={config.depositWithdrawDefaultActiveTab}>
 
-                <Tab title="BlockTrades">
+                <Tabs.Tab title="BlockTrades">
                     <div className="content-block">
                         <div className="float-right"><a href="https://blocktrades.us" target="__blank">VISIT WEBSITE</a></div>
                         <h3><Translate content="gateway.bridge" /></h3>
@@ -288,9 +288,9 @@ class AccountDepositWithdraw extends React.Component {
                             </tbody>
                         </table>
                     </div>
-                </Tab>
+                </Tabs.Tab>
 
-                <Tab title="CCEDK">
+                <Tabs.Tab title="CCEDK">
                     <div className="float-right"><a href="https://www.ccedk.com/" target="__blank">VISIT WEBSITE</a></div>
                     <table className="table">
                         <thead>
@@ -385,9 +385,9 @@ class AccountDepositWithdraw extends React.Component {
                             receive_coin_type="opennbt" />
                         </tbody>
                     </table>
-                </Tab>
+                </Tabs.Tab>
 
-                <Tab title="metaexchange">
+                <Tabs.Tab title="metaexchange">
                     <div className="content-block">
                         <div className="float-right"><a href="https://metaexchange.info" target="__blank">VISIT WEBSITE</a></div>
                         <h3><Translate content="gateway.bridge" /></h3>
@@ -454,9 +454,9 @@ class AccountDepositWithdraw extends React.Component {
                             </tbody>
                         </table>
                     </div>
-                </Tab>
+                </Tabs.Tab>
 
-                <Tab title="transwiser">
+                <Tabs.Tab title="transwiser">
                     <div className="float-right"><a href="http://www.transwiser.com" target="_blank">VISIT WEBSITE</a></div>
                     <table className="table">
                         <thead>
@@ -471,6 +471,10 @@ class AccountDepositWithdraw extends React.Component {
                         <TranswiserDepositWithdraw
                             issuerAccount="transwiser-wallet"
                             account={this.props.account.get('name')}
+                            receiveAsset="TCNY" />
+                        <TranswiserDepositWithdraw
+                            issuerAccount="transwiser-wallet"
+                            account={this.props.account.get('name')}
                             receiveAsset="CNY" />
                         <TranswiserDepositWithdraw
                             issuerAccount="transwiser-wallet"
@@ -478,7 +482,7 @@ class AccountDepositWithdraw extends React.Component {
                             receiveAsset="BOTSCNY" />
                         </tbody>
                     </table>
-                </Tab>
+                </Tabs.Tab>
 
             </Tabs>
 		</div>

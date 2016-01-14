@@ -161,8 +161,8 @@ class Transfer extends React.Component {
         let fee = utils.estimateFee("transfer", null, globalObject);
         if (from_account && !from_error) {
             let account_balances = from_account.get("balances").toJS();
-            asset_types = Object.keys(account_balances);
-            fee_asset_types = Object.keys(account_balances);
+            asset_types = Object.keys(account_balances).sort(utils.sortID);
+            fee_asset_types = Object.keys(account_balances).sort(utils.sortID);
             for (let key in account_balances) {
                 let asset = ChainStore.getObject(key);
                 let balanceObject = ChainStore.getObject(account_balances[key]);
@@ -290,7 +290,6 @@ class Transfer extends React.Component {
             </form>
             <div className="grid-content medium-6 right-column">
                 <div className="grid-content">
-                    <h4><Translate content="account.recent" /></h4>
                     <RecentTransactions
                         accountsList={accountsList}
                         limit={25}

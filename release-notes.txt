@@ -1,4 +1,65 @@
 ---------------------------------------------------------------------
+Release 2.0.160106
+---------------------------------------------------------------------
+
+NEW FEATURES:
+- Add tooltips explaining why Buy/Sell buttons are disabled fix #628
+- Add vesting balances page showing all vesting balance objects fix #640
+- Enforce secure websocket connections when using https host fix #638
+- Add tooltip showing full memo #636
+- Add text and unlock button for transfers with memos when wallet is locked #636
+- Wallet auto lock #265
+
+
+BUG FIXES:
+- Incorrect asset listed in "net worth" tooltip #633
+- Persistence of language selection #634
+- Settings screen "Preferred unit of account", wrong asset is selected #626
+- Inconsistent toggle placement between Table View and Card View #613
+- MetaExchange withdraw/deposit page, persist tab state
+- Excel issue with transactions history csv format
+
+---------------------------------------------------------------------
+Release 2.0.151223
+---------------------------------------------------------------------
+
+NEW FEATURES:
+- Membership page: show vested cashback balance and add Claim button next to it #500
+- Ability to download account history as CSV file #611
+- UX improvements to asset update and create
+
+BUG FIXES:
+- Many URLs in the GUI are not clickable #546
+- Update Voting help text #589
+- Add asset formatting to fee pool balance and issuer income #618
+- Limit core exchange rate asset amounts by asset precision #617
+- Fix 'cannot dispatch in the middle of dispatch' error #614
+- Restrict min width of markets section #615
+- Add vesting balance information and claim button #500
+- Add CER (core exchange rate) to asset creation #543
+
+---------------------------------------------------------------------
+Release 2.0.151216
+---------------------------------------------------------------------
+
+NEW FEATURES:
+- Dashboard makeover #590
+- Total Value in header #584
+- Show Date in All History #580
+- Switch the default chart interval to 1 day #601
+- Show one more decimal for prices in Exchange
+- Show popup with additional info when user clicks on currency symbol
+
+
+BUG FIXES:
+- Failed to broadcast the transaction (now <= trx.expiration) #583
+- Consolidated Open Orders screen bug #585
+- Get rid of the horizontal scroll-bar in Recent Activity #470
+- Unnecessary scroll-bars on the Create Asset confirmation screen #547
+- Decimal Bug in Matching in 8-digit Assets #586
+- In Lite wallet all website links result in broken pages #581
+
+---------------------------------------------------------------------
 Release 2.0.151202
 ---------------------------------------------------------------------
 

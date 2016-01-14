@@ -18,7 +18,8 @@ class SettingsStore {
             connection: "wss://bitshares.openledger.info/ws",
             faucet_address: "https://bitshares.openledger.info",
             unit: CORE_ASSET,
-            showSettles: false
+            showSettles: false,
+            walletLockTimeout: 60 * 10
         });
 
         this.viewSettings =  Immutable.Map({
@@ -45,6 +46,8 @@ class SettingsStore {
             [CORE_ASSET + "_METAEX.BTC", {"quote": CORE_ASSET,"base": "METAEX.BTC" } ]
         ]);
 
+        this.starredAccounts = Immutable.Map();
+
         // If you want a default value to be translated, add the translation to settings in locale-xx.js
         // and use an object {translate: key} in the defaults array
         this.defaults = {
@@ -58,7 +61,11 @@ class SettingsStore {
                 "tr"
             ],
             connection: [
-                "wss://bitshares.openledger.info/ws"
+                "wss://bitshares.openledger.info/ws",
+                "wss://bitshares.dacplay.org:8089",
+                "ws://185.82.203.92:8090", //RiverHead
+                "ws://128.199.143.47:2016", //Harvey
+                "ws://139.196.37.179:8090" //BTSDac
             ],
             unit: [
                 CORE_ASSET,
@@ -82,6 +89,8 @@ class SettingsStore {
             onChangeViewSetting: SettingsActions.changeViewSetting,
             onAddStarMarket: SettingsActions.addStarMarket,
             onRemoveStarMarket: SettingsActions.removeStarMarket,
+            onAddStarAccount: SettingsActions.addStarAccount,
+            onRemoveStarAccount: SettingsActions.removeStarAccount,
             onAddWS: SettingsActions.addWS,
             onRemoveWS: SettingsActions.removeWS
         });
@@ -92,6 +101,10 @@ class SettingsStore {
 
         if (this._lsGet("starredMarkets")) {
             this.starredMarkets = Immutable.Map(JSON.parse(this._lsGet("starredMarkets")));
+        }
+
+        if (this._lsGet("starredAccounts")) {
+            this.starredAccounts = Immutable.Map(JSON.parse(this._lsGet("starredAccounts")));
         }
 
         if (this._lsGet("defaults_v1")) {
@@ -114,6 +127,9 @@ class SettingsStore {
         );
 
         this._lsSet("settings_v3", this.settings.toJS());
+        if (payload.setting === "walletLockTimeout") {
+            this._lsSet("lockTimeout", payload.value);
+        }
     }
 
     onChangeViewSetting(payload) {
@@ -155,6 +171,23 @@ class SettingsStore {
         this.starredMarkets = this.starredMarkets.delete(marketID);
 
         this._lsSet("starredMarkets", this.starredMarkets.toJS());
+    }
+
+    onAddStarAccount(account) {
+        if (!this.starredAccounts.has(account)) {
+            this.starredAccounts = this.starredAccounts.set(account, {name: account});
+
+            this._lsSet("starredAccounts", this.starredAccounts.toJS());
+        } else {
+            return false;
+        }
+    }
+
+    onRemoveStarAccount(account) {
+
+        this.starredAccounts = this.starredAccounts.delete(account);
+
+        this._lsSet("starredAccounts", this.starredAccounts.toJS());
     }
 
     onAddWS(ws) {

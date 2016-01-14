@@ -5,6 +5,9 @@ import {PropTypes} from "react";
 import {Link} from "react-router";
 import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
+import Popover from "react-popover";
+import MarketLink from "./MarketLink";
+import HelpContent from "./HelpContent";
 
 /**
  *  Given an amount and an asset, render it with proper precision
@@ -26,7 +29,8 @@ class FormattedAsset extends React.Component {
         color: PropTypes.string,
         hide_asset: PropTypes.bool,
         hide_amount: PropTypes.bool,
-        asPercentage: PropTypes.bool
+        asPercentage: PropTypes.bool,
+        assetInfo: PropTypes.node
     };
 
     static defaultProps = {
@@ -34,8 +38,29 @@ class FormattedAsset extends React.Component {
         decimalOffset: 0,
         hide_asset: false,
         hide_amount: false,
-        asPercentage: false
+        asPercentage: false,
+        assetInfo: null
     };
+
+    static contextTypes = {
+        history: React.PropTypes.object
+    };
+
+    constructor(props) {
+        super(props);
+        this.state = {isPopoverOpen: false};
+        this.togglePopover = this.togglePopover.bind(this);
+        this.closePopover = this.closePopover.bind(this);
+    }
+
+    togglePopover(e) {
+        e.preventDefault();
+        this.setState({isPopoverOpen: !this.state.isPopoverOpen});
+    }
+
+    closePopover() {
+        this.setState({isPopoverOpen: false});
+    }
 
     render() {
         let {amount, decimalOffset, color, asset, hide_asset, hide_amount, asPercentage} = this.props;
@@ -63,6 +88,20 @@ class FormattedAsset extends React.Component {
 
         }
 
+        var issuer = ChainStore.getObject(asset.issuer);
+        var issuerName = issuer ? issuer.get('name') : '';
+
+        const currency_popover_body = !hide_asset && this.props.assetInfo && <div>
+            <HelpContent
+                path={"assets/" + asset.symbol}
+                alt_path="assets/Asset"
+                section="summary"
+                symbol={asset.symbol}
+                description={asset.options.description}
+                issuer={issuerName}/>
+            {this.props.assetInfo}
+        </div>;
+
         return (
                 <span className={colorClass}  >
                 {!hide_amount ?
@@ -72,7 +111,9 @@ class FormattedAsset extends React.Component {
                     maximumFractionDigits={decimals}
                     />
                 : null}
-                {hide_asset ? null : <span className="currency">{"\u00a0" + asset.symbol}</span>}
+                {!hide_asset && (this.props.assetInfo ? <Popover isOpen={this.state.isPopoverOpen} onOuterAction={this.closePopover} body={currency_popover_body}>
+                    <span>&nbsp;<span className="currency click-for-help" onClick={this.togglePopover}>{asset.symbol}</span></span>
+                </Popover> : <span>&nbsp;<span className="currency" onClick={this.togglePopover}>{asset.symbol}</span></span>)}
                 </span>
         );
     }

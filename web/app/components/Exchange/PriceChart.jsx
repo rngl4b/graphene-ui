@@ -73,11 +73,15 @@ class PriceChart extends React.Component {
             }
         }
 
+        let latestCheck = false;
+        if ((nextProps.priceData && !nextProps.priceData.length) && this.props.latest) {
+            latestCheck = nextProps.latest.full !== this.props.latest.full;
+        }
         return (
             !utils.are_equal_shallow(nextProps.priceData, this.props.priceData) ||
             nextState.lastPointY !== this.state.lastPointY ||
             nextProps.baseSymbol !== this.props.baseSymbol ||
-            nextProps.latest !== this.props.latest ||
+            latestCheck ||
             nextProps.leftOrderBook !== this.props.leftOrderBook ||
             !utils.are_equal_shallow(nextProps.indicatorSettings, this.props.indicatorSettings)
         );
@@ -203,7 +207,7 @@ class PriceChart extends React.Component {
 
         let positiveColor = "rgba(110, 193, 5, 0.80)";
         let negativeColor = "rgba(225, 66, 74, 0.80)";
-
+        
         if (!priceSeriesData.length && latest) {
             let now = (new Date).getTime();
             priceSeriesData.push([now, latest.full, latest.full, latest.full, latest.full]);
